@@ -94,41 +94,30 @@
 
     .label-tab {
       position: absolute;
-      height: 31px;
+      height: 35px;
       display: flex;
-      align-items: flex-start;
-      padding: 3px 10px 0 6px;
+      align-items: center;
+      padding: 0 17px 1px 8px;
       color: var(--text);
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 800;
       line-height: 1;
       white-space: nowrap;
-      border-left: 1.4px solid var(--red);
-      border-top: 1.4px solid var(--red);
-      border-right: 1.4px solid var(--blue);
-      border-top-right-radius: 14px;
       background: #fff;
     }
 
     .label-tab::before {
       content: "";
       position: absolute;
-      left: 0;
-      top: -1.4px;
-      width: 100%;
-      height: 1.4px;
-      border-top-right-radius: 14px;
-      background: linear-gradient(90deg, var(--red), var(--blue));
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 35' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='100' y2='0' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ef3340'/%3E%3Cstop offset='.52' stop-color='%23334f9f'/%3E%3Cstop offset='1' stop-color='%2336bedf'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M1 35 L1 1 H74 C88 1 99 12 99 34 V35 H1' fill='none' stroke='url(%23g)' stroke-width='2' stroke-linecap='butt' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      pointer-events: none;
     }
 
     .label-tab::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 1.4px;
-      background: linear-gradient(90deg, var(--red), var(--blue));
+      content: none;
     }
 
     .section-wires {
@@ -230,15 +219,15 @@
       text-align: center;
     }
 
-    .sensor-label.wide { width: 118px; }
+    .sensor-label.wide { width: 96px; }
     .sensor-label.tight { width: 76px; }
 
-    .s-vibration { left: 32px; top: 140px; width: 88px; }
-    .s-load { left: 32px; top: 348px; width: 65px; }
-    .s-displacement { left: 32px; top: 543px; width: 125px; }
-    .s-temperature { left: 32px; top: 824px; width: 132px; }
-    .s-electrical { left: 32px; top: 1047px; width: 98px; }
-    .s-fluid { left: 32px; top: 1245px; width: 64px; }
+    .s-vibration { left: 24px; top: 140px; width: 103px; }
+    .s-load { left: 24px; top: 348px; width: 76px; }
+    .s-displacement { left: 24px; top: 543px; width: 147px; }
+    .s-temperature { left: 24px; top: 824px; width: 153px; }
+    .s-electrical { left: 24px; top: 1047px; width: 118px; }
+    .s-fluid { left: 24px; top: 1245px; width: 75px; }
 
     .icon-vibration-velocity { left: 68px; top: 214px; width: 62px; height: 62px; }
     .icon-ultrasound { left: 184px; top: 214px; width: 72px; height: 62px; }
@@ -298,23 +287,23 @@
               </linearGradient>
             </defs>
 
-            <path class="wire" d="M32 171 V236 Q32 246 42 246 H31 M110 246 H136 M232 246 H248"/>
-            <path class="wire wire-active" data-line="Vibration" d="M32 171 V236 Q32 246 42 246 H31 M110 246 H136 M232 246 H248"/>
+            <path class="wire" d="M24 175 V236 Q24 246 34 246 H31 M110 246 H136 M232 246 H248"/>
+            <path class="wire wire-active" data-line="Vibration" d="M24 175 V236 Q24 246 34 246 H31 M110 246 H136 M232 246 H248"/>
 
-            <path class="wire" d="M32 379 V435 Q32 445 42 445 H31 M108 445 H146 M224 445 H254"/>
-            <path class="wire wire-active" data-line="Load" d="M32 379 V435 Q32 445 42 445 H31 M108 445 H146 M224 445 H254"/>
+            <path class="wire" d="M24 383 V435 Q24 445 34 445 H31 M108 445 H146 M224 445 H254"/>
+            <path class="wire wire-active" data-line="Load" d="M24 383 V435 Q24 445 34 445 H31 M108 445 H146 M224 445 H254"/>
 
-            <path class="wire" d="M32 574 V636 Q32 646 42 646 H35 M105 646 H142 M228 646 H248 M338 646 Q346 646 346 656 V746 Q346 760 332 760 H296 M181 760 H167"/>
-            <path class="wire wire-active" data-line="Displacement" d="M32 574 V636 Q32 646 42 646 H35 M105 646 H142 M228 646 H248 M338 646 Q346 646 346 656 V746 Q346 760 332 760 H296 M181 760 H167"/>
+            <path class="wire" d="M24 578 V636 Q24 646 34 646 H35 M105 646 H142 M228 646 H248 M338 646 Q346 646 346 656 V746 Q346 760 332 760 H296 M181 760 H167"/>
+            <path class="wire wire-active" data-line="Displacement" d="M24 578 V636 Q24 646 34 646 H35 M105 646 H142 M228 646 H248 M338 646 Q346 646 346 656 V746 Q346 760 332 760 H296 M181 760 H167"/>
 
-            <path class="wire" d="M32 855 V929 Q32 939 42 939 H44 M94 939 H113 M179 939 H192 M260 939 H273"/>
-            <path class="wire wire-active" data-line="Temperature" d="M32 855 V929 Q32 939 42 939 H44 M94 939 H113 M179 939 H192 M260 939 H273"/>
+            <path class="wire" d="M24 859 V929 Q24 939 34 939 H44 M94 939 H113 M179 939 H192 M260 939 H273"/>
+            <path class="wire wire-active" data-line="Temperature" d="M24 859 V929 Q24 939 34 939 H44 M94 939 H113 M179 939 H192 M260 939 H273"/>
 
-            <path class="wire" d="M32 1078 V1129 Q32 1139 42 1139 H20 M121 1139 H132 M238 1139 H252"/>
-            <path class="wire wire-active" data-line="Electrical" d="M32 1078 V1129 Q32 1139 42 1139 H20 M121 1139 H132 M238 1139 H252"/>
+            <path class="wire" d="M24 1082 V1129 Q24 1139 34 1139 H20 M121 1139 H132 M238 1139 H252"/>
+            <path class="wire wire-active" data-line="Electrical" d="M24 1082 V1129 Q24 1139 34 1139 H20 M121 1139 H132 M238 1139 H252"/>
 
-            <path class="wire" d="M32 1276 V1328 Q32 1338 42 1338 H31 M108 1338 H142 M228 1338 H257 M331 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H278 M192 1452 H158"/>
-            <path class="wire wire-active" data-line="Fluid" d="M32 1276 V1328 Q32 1338 42 1338 H31 M108 1338 H142 M228 1338 H257 M331 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H278 M192 1452 H158"/>
+            <path class="wire" d="M24 1280 V1328 Q24 1338 34 1338 H31 M108 1338 H142 M228 1338 H257 M331 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H278 M192 1452 H158"/>
+            <path class="wire wire-active" data-line="Fluid" d="M24 1280 V1328 Q24 1338 34 1338 H31 M108 1338 H142 M228 1338 H257 M331 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H278 M192 1452 H158"/>
           </svg>
 
           <div class="sensor icon-vibration-velocity" data-section="Vibration">
@@ -546,8 +535,11 @@
       const isMobile = window.innerWidth <= 900;
       const widthPadding = isMobile ? 0 : 24;
       const heightPadding = isMobile ? 16 : 24;
+      const contentLeft = 20;
+      const contentRight = 361;
+      const contentWidth = contentRight - contentLeft;
       const scale = isMobile
-        ? Math.min(1.18, (window.innerWidth - widthPadding) / 330)
+        ? Math.min(1.18, (window.innerWidth - widthPadding) / contentWidth)
         : Math.min(
           1,
           (window.innerWidth - widthPadding) / 370,
@@ -558,8 +550,6 @@
         : 1568 * scale;
       document.documentElement.style.setProperty("--board-scale", scale.toFixed(4));
       const stageWidth = isMobile ? window.innerWidth - widthPadding : 370 * scale;
-      const contentLeft = 22;
-      const contentRight = 346;
       const boardX = isMobile
         ? ((stageWidth - (contentRight - contentLeft) * scale) / 2) - contentLeft * scale
         : 0;
