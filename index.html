@@ -15,6 +15,7 @@
       --blue: #36bedf;
       --active-stroke: url(#sensorGradient);
       --board-scale: 1;
+      --board-offset: 0px;
     }
 
     * { box-sizing: border-box; }
@@ -63,7 +64,7 @@
       top: 0;
       width: 370px;
       height: 1568px;
-      transform: scale(var(--board-scale));
+      transform: translateY(var(--board-offset)) scale(var(--board-scale));
       transform-origin: top left;
       background: #ffffff;
       overflow: visible;
@@ -496,6 +497,7 @@
     ];
 
     const scene = document.getElementById("scene");
+    const stage = document.querySelector(".stage");
     const lineMap = new Map([...document.querySelectorAll("[data-line]")].map(path => [path.dataset.line, path]));
     const totalUnits = sections.reduce((sum, section) => sum + section.icons.length + 1, 0);
     let sceneStart = 0;
@@ -521,15 +523,22 @@
     }
 
     function resizeScene() {
-      const scale = Math.min(
-        1,
-        (window.innerWidth - 24) / 370,
-        (window.innerHeight - 24) / 1568
-      );
-      const stage = document.querySelector(".stage");
+      const isMobile = window.innerWidth <= 640;
+      const widthPadding = isMobile ? 16 : 24;
+      const heightPadding = isMobile ? 16 : 24;
+      const scale = isMobile
+        ? Math.min(1, (window.innerWidth - widthPadding) / 370)
+        : Math.min(
+          1,
+          (window.innerWidth - widthPadding) / 370,
+          (window.innerHeight - heightPadding) / 1568
+        );
+      const stageHeight = isMobile
+        ? window.innerHeight - heightPadding
+        : 1568 * scale;
       document.documentElement.style.setProperty("--board-scale", scale.toFixed(4));
       stage.style.width = `${370 * scale}px`;
-      stage.style.height = `${1568 * scale}px`;
+      stage.style.height = `${stageHeight}px`;
       scene.style.height = `${window.innerHeight + totalUnits * 138}px`;
       const rect = scene.getBoundingClientRect();
       sceneStart = window.scrollY + rect.top;
@@ -548,6 +557,9 @@
       ticking = false;
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const sceneProgress = reducedMotion ? 1 : clamp((window.scrollY - sceneStart) / sceneDistance);
+      const boardHeight = 1568 * Number(getComputedStyle(document.documentElement).getPropertyValue("--board-scale") || 1);
+      const maxOffset = Math.min(0, stage.clientHeight - boardHeight);
+      document.documentElement.style.setProperty("--board-offset", `${maxOffset * sceneProgress}px`);
       const timeline = sceneProgress * totalUnits;
       let cursor = 0;
 
