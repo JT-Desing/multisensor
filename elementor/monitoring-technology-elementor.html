@@ -1,0 +1,584 @@
+<!-- DALOG Monitoring Technology - Elementor HTML widget snippet
+     Paste this full block into an Elementor HTML widget.
+     All CSS/JS is scoped with the dalog-mt prefix to avoid Elementor/WordPress class conflicts. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+.dalog-mt {
+      --text: #575756;
+      --line: #b2b2b2;
+      --red: #ef3340;
+      --blue: #36bedf;
+      --active-stroke: url(#dalogMtSensorGradient);
+      --board-scale: 1;
+      --board-x: 0px;
+      --board-offset: 0px;
+      position: relative;
+      width: 100%;
+      background: #ffffff;
+      color: var(--text);
+      font-family: "Red Hat Display", Arial, sans-serif;
+      line-height: normal;
+      overflow: visible;
+    }
+
+.dalog-mt, .dalog-mt * { box-sizing: border-box; }
+.dalog-mt img,
+.dalog-mt svg {
+      max-width: none;
+      border: 0;
+      box-shadow: none;
+    }
+.dalog-mt__scroll-scene {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100svh;
+      background: #ffffff;
+    }
+
+    .dalog-mt__pin {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .dalog-mt__stage {
+      position: relative;
+      width: 370px;
+      height: 1568px;
+      max-width: calc(100vw - 24px);
+      max-height: calc(100vh - 24px);
+    }
+
+    .dalog-mt__board {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 370px;
+      height: 1568px;
+      transform: translate(var(--board-x), var(--board-offset)) scale(var(--board-scale));
+      transform-origin: top left;
+      background: #ffffff;
+      overflow: visible;
+    }
+
+    .dalog-mt__title-rule {
+      position: absolute;
+      left: 23px;
+      top: 45px;
+      width: 123px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--red), var(--blue));
+    }
+
+    .dalog-mt__title {
+      position: absolute;
+      left: 23px;
+      top: 61px;
+      margin: 0;
+      color: var(--text);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: .92;
+      letter-spacing: 0;
+    }
+
+    .dalog-mt__label-tab {
+      position: absolute;
+      z-index: 3;
+      height: 31px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px 1px 6px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .dalog-mt__label-tab::before,
+    .dalog-mt__label-tab::after { content: none; }
+
+    .dalog-mt__section-wires {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      width: 370px;
+      height: 1568px;
+      max-width: none !important;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .dalog-mt__wire {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 1.35;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .dalog-mt__wire-active {
+      stroke: var(--active-stroke);
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+
+    .dalog-mt__sensor {
+      --active: 0;
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      transform: translate(-50%, 0);
+      overflow: visible;
+      isolation: isolate;
+    }
+
+    .dalog-mt__sensor-media {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      overflow: visible;
+    }
+
+    .dalog-mt__sensor-media::before {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      z-index: 0;
+      background: #fff;
+    }
+
+    .dalog-mt__sensor img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none !important;
+      object-fit: contain;
+      display: block;
+      z-index: 1;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .dalog-mt__sensor .dalog-mt__inactive {
+      opacity: calc(1 - var(--active));
+      filter: grayscale(1) saturate(0) opacity(.82);
+    }
+
+    .dalog-mt__sensor .dalog-mt__active {
+      opacity: var(--active);
+      filter: none;
+    }
+
+    .dalog-mt__sensor svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .dalog-mt__svg-inactive {
+      opacity: calc(1 - var(--active));
+    }
+
+    .dalog-mt__svg-active {
+      opacity: var(--active);
+    }
+
+    .dalog-mt__sensor-label {
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 7px);
+      width: 96px;
+      transform: translateX(-50%);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: .96;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    .dalog-mt__sensor-label.dalog-mt__sensor-label--wide { width: 96px; }
+    .dalog-mt__sensor-label.dalog-mt__sensor-label--tight { width: 76px; }
+
+    .dalog-mt__section-tab--vibration { left: 23px; top: 134px; width: 99px; }
+    .dalog-mt__section-tab--load { left: 23px; top: 342px; width: 69px; }
+    .dalog-mt__section-tab--displacement { left: 23px; top: 537px; width: 135px; }
+    .dalog-mt__section-tab--temperature { left: 23px; top: 818px; width: 130px; }
+    .dalog-mt__section-tab--electrical { left: 23px; top: 1040px; width: 99px; }
+    .dalog-mt__section-tab--fluid { left: 23px; top: 1236px; width: 71px; }
+
+    .dalog-mt__icon-vibration-velocity { left: 78px; top: 214px; width: 62px; height: 62px; }
+    .dalog-mt__icon-ultrasound { left: 184px; top: 214px; width: 72px; height: 62px; }
+    .dalog-mt__icon-acceleration { left: 282px; top: 214px; width: 72px; height: 62px; }
+
+    .dalog-mt__icon-torque { left: 98px; top: 414px; width: 62px; height: 62px; }
+    .dalog-mt__icon-strain { left: 187px; top: 414px; width: 62px; height: 62px; }
+    .dalog-mt__icon-bending { left: 276px; top: 414px; width: 62px; height: 62px; }
+
+    .dalog-mt__icon-gps { left: 85px; top: 610px; width: 54px; height: 73px; }
+    .dalog-mt__icon-movement { left: 184px; top: 610px; width: 68px; height: 69px; }
+    .dalog-mt__icon-runout { left: 288px; top: 610px; width: 72px; height: 69px; }
+    .dalog-mt__icon-speed { left: 130px; top: 741px; width: 90px; height: 38px; }
+    .dalog-mt__icon-tilting { left: 244px; top: 743px; width: 100px; height: 32px; }
+
+    .dalog-mt__icon-ambient { left: 65px; top: 903px; width: 36px; height: 72px; }
+    .dalog-mt__icon-contact { left: 152px; top: 903px; width: 50px; height: 72px; }
+    .dalog-mt__icon-thermal { left: 226px; top: 906px; width: 52px; height: 70px; }
+    .dalog-mt__icon-shaft { left: 310px; top: 902px; width: 64px; height: 72px; }
+
+    .dalog-mt__icon-current { left: 86px; top: 1110px; width: 86px; height: 58px; }
+    .dalog-mt__icon-voltage { left: 195px; top: 1110px; width: 86px; height: 58px; }
+    .dalog-mt__icon-power { left: 298px; top: 1106px; width: 64px; height: 64px; }
+
+    .dalog-mt__icon-pressure { left: 86px; top: 1306px; width: 64px; height: 64px; }
+    .dalog-mt__icon-moisture { left: 184px; top: 1304px; width: 70px; height: 64px; }
+    .dalog-mt__icon-contamination { left: 284px; top: 1306px; width: 58px; height: 64px; }
+    .dalog-mt__icon-flow { left: 134px; top: 1412px; width: 64px; height: 64px; }
+    .dalog-mt__icon-metallic { left: 240px; top: 1410px; width: 70px; height: 64px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dalog-mt__pin { position: relative; }
+    }
+</style>
+<div class="dalog-mt" data-dalog-mt-widget="monitoring-technology">
+<main class="dalog-mt__scroll-scene"  aria-label="Monitoring Technology sensor categories">
+    <div class="dalog-mt__pin">
+      <div class="dalog-mt__stage" aria-hidden="true">
+        <section class="dalog-mt__board" >
+          <div class="dalog-mt__title-rule"></div>
+          <h1 class="dalog-mt__title">Monitoring<br>Technology</h1>
+
+          <div class="dalog-mt__label-tab dalog-mt__section-tab--vibration">Vibration</div>
+          <div class="dalog-mt__label-tab dalog-mt__section-tab--load">Load</div>
+          <div class="dalog-mt__label-tab dalog-mt__section-tab--displacement">Displacement</div>
+          <div class="dalog-mt__label-tab dalog-mt__section-tab--temperature">Temperature</div>
+          <div class="dalog-mt__label-tab dalog-mt__section-tab--electrical">Electrical</div>
+          <div class="dalog-mt__label-tab dalog-mt__section-tab--fluid">Fluid</div>
+
+          <svg class="dalog-mt__section-wires" viewBox="0 0 370 1568">
+            <defs>
+              <linearGradient id="dalogMtSensorGradient" x1="0" y1="0" x2="370" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ef3340"/>
+                <stop offset=".52" stop-color="#334f9f"/>
+                <stop offset="1" stop-color="#36bedf"/>
+              </linearGradient>
+            </defs>
+
+            <path class="dalog-mt__wire" d="M23 165 L23 134 H96 C111 134 122 146 122 164 V165 H23 V224 Q23 234 33 234 H318"/>
+            <path class="dalog-mt__wire dalog-mt__wire-active" data-dalog-mt-line="Vibration" d="M23 165 L23 134 H96 C111 134 122 146 122 164 V165 H23 V224 Q23 234 33 234 H318"/>
+
+            <path class="dalog-mt__wire" d="M23 374 L23 342 H72 C84 342 92 350 92 373 V374 H23 V433 Q23 443 33 443 H306"/>
+            <path class="dalog-mt__wire dalog-mt__wire-active" data-dalog-mt-line="Load" d="M23 374 L23 342 H72 C84 342 92 350 92 373 V374 H23 V433 Q23 443 33 443 H306"/>
+
+            <path class="dalog-mt__wire" d="M23 568 L23 537 H130 C145 537 158 550 158 567 V568 H23 V628 Q23 638 33 638 H340 Q350 638 350 648 V734 Q350 744 340 744 H104"/>
+            <path class="dalog-mt__wire dalog-mt__wire-active" data-dalog-mt-line="Displacement" d="M23 568 L23 537 H130 C145 537 158 550 158 567 V568 H23 V628 Q23 638 33 638 H340 Q350 638 350 648 V734 Q350 744 340 744 H104"/>
+
+            <path class="dalog-mt__wire" d="M23 849 L23 818 H125 C140 818 153 831 153 848 V849 H23 V909 Q23 919 33 919 H338"/>
+            <path class="dalog-mt__wire dalog-mt__wire-active" data-dalog-mt-line="Temperature" d="M23 849 L23 818 H125 C140 818 153 831 153 848 V849 H23 V909 Q23 919 33 919 H338"/>
+
+            <path class="dalog-mt__wire" d="M23 1071 L23 1040 H96 C111 1040 122 1052 122 1070 V1071 H23 V1129 Q23 1139 33 1139 H328"/>
+            <path class="dalog-mt__wire dalog-mt__wire-active" data-dalog-mt-line="Electrical" d="M23 1071 L23 1040 H96 C111 1040 122 1052 122 1070 V1071 H23 V1129 Q23 1139 33 1139 H328"/>
+
+            <path class="dalog-mt__wire" d="M23 1267 L23 1236 H74 C86 1236 94 1244 94 1266 V1267 H23 V1328 Q23 1338 33 1338 H340 Q350 1338 350 1348 V1433 Q350 1443 340 1443 H104"/>
+            <path class="dalog-mt__wire dalog-mt__wire-active" data-dalog-mt-line="Fluid" d="M23 1267 L23 1236 H74 C86 1236 94 1244 94 1266 V1267 H23 V1328 Q23 1338 33 1338 H340 Q350 1338 350 1348 V1433 Q350 1443 340 1443 H104"/>
+          </svg>
+
+          <div class="dalog-mt__sensor dalog-mt__icon-vibration-velocity" data-dalog-mt-section="Vibration">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Vibration/vibration_velocity.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Vibration/vibration_velocity_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label">Vibration<br>Velocity</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-ultrasound" data-dalog-mt-section="Vibration">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Vibration/ultrasound.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Vibration/ultrasound_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label">Ultrasound</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-acceleration" data-dalog-mt-section="Vibration">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Vibration/acceleration.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Vibration/acceleration_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label">Acceleration</div>
+          </div>
+
+          <div class="dalog-mt__sensor dalog-mt__icon-torque" data-dalog-mt-section="Load">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Load/torque.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Load/torque_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Torque</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-strain" data-dalog-mt-section="Load">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Load/strain.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Load/strain_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Strain</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-bending" data-dalog-mt-section="Load">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Load/bending.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Load/bending_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Bending</div>
+          </div>
+
+          <div class="dalog-mt__sensor dalog-mt__icon-gps" data-dalog-mt-section="Displacement">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Displacement/gps_location.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Displacement/gps_location_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label">GPS<br>Location</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-movement" data-dalog-mt-section="Displacement">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Displacement/movement.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Displacement/movement_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label">Movement</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-runout" data-dalog-mt-section="Displacement">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Displacement/run_out.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Displacement/run_out_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label">Run-Out</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-speed" data-dalog-mt-section="Displacement">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Displacement/speed.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Displacement/speed_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Speed</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-tilting" data-dalog-mt-section="Displacement">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Displacement/tilting.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Displacement/tilting_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Tilting</div>
+          </div>
+
+          <div class="dalog-mt__sensor dalog-mt__icon-ambient" data-dalog-mt-section="Temperature">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Temperature/ambient_temperature.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Temperature/ambient_temperature_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--wide">Ambient<br>Temperature</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-contact" data-dalog-mt-section="Temperature">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Temperature/contact_probes.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Temperature/contact_probes_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--wide">Contact<br>Probes</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-thermal" data-dalog-mt-section="Temperature">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Temperature/thermal_imaging.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Temperature/thermal_imaging_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--wide">Thermal<br>Imaging</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-shaft" data-dalog-mt-section="Temperature">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Temperature/shaft_temperature.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Temperature/shaft_temperature_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--wide">Shaft<br>Temperature</div>
+          </div>
+
+          <div class="dalog-mt__sensor dalog-mt__icon-current" data-dalog-mt-section="Electrical">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Electrical/current.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Electrical/current_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Current</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-voltage" data-dalog-mt-section="Electrical">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Electrical/voltage.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Electrical/voltage_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Voltage</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-power" data-dalog-mt-section="Electrical">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Electrical/power.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Electrical/power_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Power</div>
+          </div>
+
+          <div class="dalog-mt__sensor dalog-mt__icon-pressure" data-dalog-mt-section="Fluid">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Fluid/pressure.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Fluid/pressure_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Pressure</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-moisture" data-dalog-mt-section="Fluid">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Fluid/moisture.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Fluid/moisture_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Moisture</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-contamination" data-dalog-mt-section="Fluid">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Fluid/contamination.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Fluid/contamination_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--wide">Contamination</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-flow" data-dalog-mt-section="Fluid">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Fluid/flow.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Fluid/flow_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label dalog-mt__sensor-label--tight">Flow</div>
+          </div>
+          <div class="dalog-mt__sensor dalog-mt__icon-metallic" data-dalog-mt-section="Fluid">
+            <div class="dalog-mt__sensor-media">
+              <img class="dalog-mt__inactive" src="https://jt-desing.github.io/multisensor/assets/Fluid/metallic_wear.png" alt="">
+              <img class="dalog-mt__active" src="https://jt-desing.github.io/multisensor/assets/Fluid/metallic_wear_degrade.png" alt="">
+            </div>
+            <div class="dalog-mt__sensor-label">Metallic<br>Wear</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+(function dalogMtElementorInit() {
+  const widgets = document.querySelectorAll('.dalog-mt');
+  widgets.forEach((root) => {
+    if (root.dataset.dalogMtReady === 'true') return;
+    root.dataset.dalogMtReady = 'true';
+    const q = (selector) => root.querySelector(selector);
+    const qa = (selector) => Array.from(root.querySelectorAll(selector));
+    const sections = [
+      { name: 'Vibration', icons: qa('[data-dalog-mt-section="Vibration"]') },
+      { name: 'Load', icons: qa('[data-dalog-mt-section="Load"]') },
+      {
+        name: 'Displacement',
+        icons: [q('.dalog-mt__icon-gps'), q('.dalog-mt__icon-movement'), q('.dalog-mt__icon-runout'), q('.dalog-mt__icon-tilting'), q('.dalog-mt__icon-speed')].filter(Boolean)
+      },
+      { name: 'Temperature', icons: qa('[data-dalog-mt-section="Temperature"]') },
+      { name: 'Electrical', icons: qa('[data-dalog-mt-section="Electrical"]') },
+      {
+        name: 'Fluid',
+        icons: [q('.dalog-mt__icon-pressure'), q('.dalog-mt__icon-moisture'), q('.dalog-mt__icon-contamination'), q('.dalog-mt__icon-metallic'), q('.dalog-mt__icon-flow')].filter(Boolean)
+      }
+    ];
+    const scene = q('.dalog-mt__scroll-scene');
+    const stage = q('.dalog-mt__stage');
+    const lineMap = new Map(qa('[data-dalog-mt-line]').map((path) => [path.dataset.dalogMtLine, path]));
+    const totalUnits = sections.reduce((sum, section) => sum + section.icons.length + 1, 0);
+    let sceneStart = 0;
+    let sceneDistance = 1;
+    let ticking = false;
+    function clamp(value, min = 0, max = 1) { return Math.min(max, Math.max(min, value)); }
+    function smooth(value) { value = clamp(value); return value * value * (3 - 2 * value); }
+    function setupLines() {
+      for (const path of lineMap.values()) {
+        const length = path.getTotalLength();
+        path.style.strokeDasharray = length;
+        path.style.strokeDashoffset = length;
+        path.dataset.length = String(length);
+      }
+    }
+    function resizeScene() {
+      const isMobile = window.innerWidth <= 900;
+      const widthPadding = isMobile ? 0 : 24;
+      const heightPadding = isMobile ? 16 : 24;
+      const contentLeft = 20;
+      const contentRight = 361;
+      const contentWidth = contentRight - contentLeft;
+      const scale = isMobile ? Math.min(1.18, (window.innerWidth - widthPadding) / contentWidth) : Math.min(1, (window.innerWidth - widthPadding) / 370, (window.innerHeight - heightPadding) / 1568);
+      const stageHeight = isMobile ? window.innerHeight - heightPadding : 1568 * scale;
+      root.style.setProperty('--board-scale', scale.toFixed(4));
+      const stageWidth = isMobile ? window.innerWidth - widthPadding : 370 * scale;
+      const boardX = isMobile ? ((stageWidth - contentWidth * scale) / 2) - contentLeft * scale : 0;
+      root.style.setProperty('--board-x', boardX + 'px');
+      stage.style.maxWidth = isMobile ? '100vw' : 'calc(100vw - 24px)';
+      stage.style.width = stageWidth + 'px';
+      stage.style.height = stageHeight + 'px';
+      scene.style.height = (window.innerHeight + totalUnits * 138) + 'px';
+      const rect = scene.getBoundingClientRect();
+      sceneStart = window.scrollY + rect.top;
+      sceneDistance = Math.max(1, scene.offsetHeight - window.innerHeight);
+      update();
+    }
+    function setLineProgress(section, progress) {
+      const path = lineMap.get(section.name);
+      if (!path) return;
+      const length = Number(path.dataset.length || path.getTotalLength());
+      path.style.strokeDashoffset = String(length * (1 - smooth(progress)));
+    }
+    function update() {
+      ticking = false;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const sceneProgress = reducedMotion ? 1 : clamp((window.scrollY - sceneStart) / sceneDistance);
+      const boardHeight = 1568 * Number(getComputedStyle(root).getPropertyValue('--board-scale') || 1);
+      const maxOffset = Math.min(0, stage.clientHeight - boardHeight);
+      root.style.setProperty('--board-offset', (maxOffset * sceneProgress) + 'px');
+      const timeline = sceneProgress * totalUnits;
+      let cursor = 0;
+      for (const section of sections) {
+        const segment = section.icons.length + 1;
+        const local = timeline - cursor;
+        setLineProgress(section, clamp(local / segment));
+        section.icons.forEach((icon, index) => {
+          const active = smooth(local - 1 - index);
+          icon.style.setProperty('--active', active.toFixed(3));
+        });
+        if (local <= 0) {
+          setLineProgress(section, 0);
+          section.icons.forEach((icon) => icon.style.setProperty('--active', '0'));
+        } else if (local >= segment) {
+          setLineProgress(section, 1);
+          section.icons.forEach((icon) => icon.style.setProperty('--active', '1'));
+        }
+        cursor += segment;
+      }
+    }
+    function requestUpdate() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+    setupLines();
+    resizeScene();
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', resizeScene);
+    window.addEventListener('load', resizeScene);
+  });
+})();
+</script>
