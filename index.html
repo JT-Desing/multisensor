@@ -578,7 +578,7 @@
       for (const section of sections) {
         const segment = section.icons.length + 1;
         const local = timeline - cursor;
-        const lineProgress = clamp(local / 1);
+        const lineProgress = clamp(local / segment);
         setLineProgress(section, lineProgress);
 
         section.icons.forEach((icon, index) => {
