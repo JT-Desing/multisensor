@@ -106,7 +106,7 @@
       border-left: 1.4px solid var(--red);
       border-top: 1.4px solid var(--red);
       border-right: 1.4px solid var(--blue);
-      border-top-right-radius: 8px;
+      border-top-right-radius: 14px;
       background: #fff;
     }
 
@@ -117,7 +117,17 @@
       top: -1.4px;
       width: 100%;
       height: 1.4px;
-      border-top-right-radius: 8px;
+      border-top-right-radius: 14px;
+      background: linear-gradient(90deg, var(--red), var(--blue));
+    }
+
+    .label-tab::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1.4px;
       background: linear-gradient(90deg, var(--red), var(--blue));
     }
 
@@ -162,6 +172,14 @@
       overflow: visible;
     }
 
+    .sensor-media::before {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      z-index: 0;
+      background: #fff;
+    }
+
     .sensor img {
       position: absolute;
       inset: 0;
@@ -169,6 +187,7 @@
       height: 100%;
       object-fit: contain;
       display: block;
+      z-index: 1;
     }
 
     .sensor .inactive {
@@ -279,23 +298,23 @@
               </linearGradient>
             </defs>
 
-            <path class="wire" d="M32 171 V236 Q32 246 42 246 H28 M110 246 H136 M232 246 H248"/>
-            <path class="wire wire-active" data-line="Vibration" d="M32 171 V236 Q32 246 42 246 H28 M110 246 H136 M232 246 H248"/>
+            <path class="wire" d="M32 171 V236 Q32 246 42 246 H31 M110 246 H136 M232 246 H248"/>
+            <path class="wire wire-active" data-line="Vibration" d="M32 171 V236 Q32 246 42 246 H31 M110 246 H136 M232 246 H248"/>
 
-            <path class="wire" d="M32 379 V435 Q32 445 42 445 H28 M108 445 H146 M224 445 H254"/>
-            <path class="wire wire-active" data-line="Load" d="M32 379 V435 Q32 445 42 445 H28 M108 445 H146 M224 445 H254"/>
+            <path class="wire" d="M32 379 V435 Q32 445 42 445 H31 M108 445 H146 M224 445 H254"/>
+            <path class="wire wire-active" data-line="Load" d="M32 379 V435 Q32 445 42 445 H31 M108 445 H146 M224 445 H254"/>
 
-            <path class="wire" d="M32 574 V636 Q32 646 42 646 H32 M105 646 H142 M228 646 H248 M338 646 Q346 646 346 656 V746 Q346 760 332 760 H296 M181 760 H167"/>
-            <path class="wire wire-active" data-line="Displacement" d="M32 574 V636 Q32 646 42 646 H32 M105 646 H142 M228 646 H248 M338 646 Q346 646 346 656 V746 Q346 760 332 760 H296 M181 760 H167"/>
+            <path class="wire" d="M32 574 V636 Q32 646 42 646 H35 M105 646 H142 M228 646 H248 M338 646 Q346 646 346 656 V746 Q346 760 332 760 H296 M181 760 H167"/>
+            <path class="wire wire-active" data-line="Displacement" d="M32 574 V636 Q32 646 42 646 H35 M105 646 H142 M228 646 H248 M338 646 Q346 646 346 656 V746 Q346 760 332 760 H296 M181 760 H167"/>
 
-            <path class="wire" d="M32 855 V929 Q32 939 42 939 H42 M94 939 H113 M179 939 H192 M260 939 H273"/>
-            <path class="wire wire-active" data-line="Temperature" d="M32 855 V929 Q32 939 42 939 H42 M94 939 H113 M179 939 H192 M260 939 H273"/>
+            <path class="wire" d="M32 855 V929 Q32 939 42 939 H44 M94 939 H113 M179 939 H192 M260 939 H273"/>
+            <path class="wire wire-active" data-line="Temperature" d="M32 855 V929 Q32 939 42 939 H44 M94 939 H113 M179 939 H192 M260 939 H273"/>
 
-            <path class="wire" d="M32 1078 V1129 Q32 1139 42 1139 H15 M121 1139 H132 M238 1139 H252"/>
-            <path class="wire wire-active" data-line="Electrical" d="M32 1078 V1129 Q32 1139 42 1139 H15 M121 1139 H132 M238 1139 H252"/>
+            <path class="wire" d="M32 1078 V1129 Q32 1139 42 1139 H20 M121 1139 H132 M238 1139 H252"/>
+            <path class="wire wire-active" data-line="Electrical" d="M32 1078 V1129 Q32 1139 42 1139 H20 M121 1139 H132 M238 1139 H252"/>
 
-            <path class="wire" d="M32 1276 V1328 Q32 1338 42 1338 H28 M108 1338 H142 M228 1338 H257 M331 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H278 M192 1452 H158"/>
-            <path class="wire wire-active" data-line="Fluid" d="M32 1276 V1328 Q32 1338 42 1338 H28 M108 1338 H142 M228 1338 H257 M331 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H278 M192 1452 H158"/>
+            <path class="wire" d="M32 1276 V1328 Q32 1338 42 1338 H31 M108 1338 H142 M228 1338 H257 M331 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H278 M192 1452 H158"/>
+            <path class="wire wire-active" data-line="Fluid" d="M32 1276 V1328 Q32 1338 42 1338 H31 M108 1338 H142 M228 1338 H257 M331 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H278 M192 1452 H158"/>
           </svg>
 
           <div class="sensor icon-vibration-velocity" data-section="Vibration">
