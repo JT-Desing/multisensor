@@ -60,12 +60,12 @@
 
     .board {
       position: absolute;
-      left: 0;
+      left: 50%;
       top: 0;
       width: 370px;
       height: 1568px;
-      transform: translateY(var(--board-offset)) scale(var(--board-scale));
-      transform-origin: top left;
+      transform: translateX(-50%) translateY(var(--board-offset)) scale(var(--board-scale));
+      transform-origin: top center;
       background: #ffffff;
       overflow: visible;
     }
@@ -278,23 +278,23 @@
               </linearGradient>
             </defs>
 
-            <path class="wire" d="M32 171 V236 Q32 246 42 246 H37 M99 246 H148 M220 246 H258"/>
-            <path class="wire wire-active" data-line="Vibration" d="M32 171 V236 Q32 246 42 246 H37 M99 246 H148 M220 246 H258"/>
+            <path class="wire" d="M32 171 V236 Q32 246 42 246 H32 M104 246 H142 M226 246 H252"/>
+            <path class="wire wire-active" data-line="Vibration" d="M32 171 V236 Q32 246 42 246 H32 M104 246 H142 M226 246 H252"/>
 
-            <path class="wire" d="M32 379 V435 Q32 445 42 445 H37 M99 445 H154 M216 445 H263"/>
-            <path class="wire wire-active" data-line="Load" d="M32 379 V435 Q32 445 42 445 H37 M99 445 H154 M216 445 H263"/>
+            <path class="wire" d="M32 379 V435 Q32 445 42 445 H32 M104 445 H149 M222 445 H258"/>
+            <path class="wire wire-active" data-line="Load" d="M32 379 V435 Q32 445 42 445 H32 M104 445 H149 M222 445 H258"/>
 
-            <path class="wire" d="M32 574 V636 Q32 646 42 646 H41 M95 646 H151 M219 646 H258 M330 646 H336 Q346 646 346 656 V746 Q346 760 332 760 H285 M185 760 H163"/>
-            <path class="wire wire-active" data-line="Displacement" d="M32 574 V636 Q32 646 42 646 H41 M95 646 H151 M219 646 H258 M330 646 H336 Q346 646 346 656 V746 Q346 760 332 760 H285 M185 760 H163"/>
+            <path class="wire" d="M32 574 V636 Q32 646 42 646 H36 M101 646 H146 M224 646 H252 M336 646 Q346 646 346 656 V746 Q346 760 332 760 H292 M179 760 H169"/>
+            <path class="wire wire-active" data-line="Displacement" d="M32 574 V636 Q32 646 42 646 H36 M101 646 H146 M224 646 H252 M336 646 Q346 646 346 656 V746 Q346 760 332 760 H292 M179 760 H169"/>
 
-            <path class="wire" d="M32 855 V929 Q32 939 42 939 H50 M86 939 H121 M171 939 H200 M252 939 H281"/>
-            <path class="wire wire-active" data-line="Temperature" d="M32 855 V929 Q32 939 42 939 H50 M86 939 H121 M171 939 H200 M252 939 H281"/>
+            <path class="wire" d="M32 855 V929 Q32 939 42 939 H44 M92 939 H115 M177 939 H194 M258 939 H275"/>
+            <path class="wire wire-active" data-line="Temperature" d="M32 855 V929 Q32 939 42 939 H44 M92 939 H115 M177 939 H194 M258 939 H275"/>
 
-            <path class="wire" d="M32 1078 V1129 Q32 1139 42 1139 H25 M111 1139 H142 M228 1139 H262"/>
-            <path class="wire wire-active" data-line="Electrical" d="M32 1078 V1129 Q32 1139 42 1139 H25 M111 1139 H142 M228 1139 H262"/>
+            <path class="wire" d="M32 1078 V1129 Q32 1139 42 1139 H20 M116 1139 H137 M233 1139 H257"/>
+            <path class="wire wire-active" data-line="Electrical" d="M32 1078 V1129 Q32 1139 42 1139 H20 M116 1139 H137 M233 1139 H257"/>
 
-            <path class="wire" d="M32 1276 V1328 Q32 1338 42 1338 H36 M100 1338 H150 M220 1338 H265 M323 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H270 M200 1452 H149"/>
-            <path class="wire wire-active" data-line="Fluid" d="M32 1276 V1328 Q32 1338 42 1338 H36 M100 1338 H150 M220 1338 H265 M323 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H270 M200 1452 H149"/>
+            <path class="wire" d="M32 1276 V1328 Q32 1338 42 1338 H32 M104 1338 H144 M226 1338 H259 M329 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H276 M194 1452 H155"/>
+            <path class="wire wire-active" data-line="Fluid" d="M32 1276 V1328 Q32 1338 42 1338 H32 M104 1338 H144 M226 1338 H259 M329 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H276 M194 1452 H155"/>
           </svg>
 
           <div class="sensor icon-vibration-velocity" data-section="Vibration">
@@ -523,11 +523,11 @@
     }
 
     function resizeScene() {
-      const isMobile = window.innerWidth <= 640;
-      const widthPadding = isMobile ? 16 : 24;
+      const isMobile = window.innerWidth <= 900;
+      const widthPadding = isMobile ? 8 : 24;
       const heightPadding = isMobile ? 16 : 24;
       const scale = isMobile
-        ? Math.min(1, (window.innerWidth - widthPadding) / 370)
+        ? Math.min(1.15, (window.innerWidth - widthPadding) / 335)
         : Math.min(
           1,
           (window.innerWidth - widthPadding) / 370,
@@ -537,7 +537,7 @@
         ? window.innerHeight - heightPadding
         : 1568 * scale;
       document.documentElement.style.setProperty("--board-scale", scale.toFixed(4));
-      stage.style.width = `${370 * scale}px`;
+      stage.style.width = `${isMobile ? window.innerWidth - widthPadding : 370 * scale}px`;
       stage.style.height = `${stageHeight}px`;
       scene.style.height = `${window.innerHeight + totalUnits * 138}px`;
       const rect = scene.getBoundingClientRect();
