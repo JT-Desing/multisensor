@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitoring Technology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text: #575756;
+      --line: #b2b2b2;
+      --red: #ef3340;
+      --blue: #36bedf;
+      --active-stroke: url(#sensorGradient);
+      --board-scale: 1;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      background: #ffffff;
+      color: var(--text);
+      font-family: "Red Hat Display", Arial, sans-serif;
+      scroll-behavior: auto;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #ffffff;
+    }
+
+    .scroll-scene {
+      position: relative;
+      min-height: 100vh;
+      background: #ffffff;
+    }
+
+    .pin {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .stage {
+      position: relative;
+      width: 370px;
+      height: 1568px;
+      max-width: calc(100vw - 24px);
+      max-height: calc(100vh - 24px);
+    }
+
+    .board {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 370px;
+      height: 1568px;
+      transform: scale(var(--board-scale));
+      transform-origin: top left;
+      background: #ffffff;
+      overflow: visible;
+    }
+
+    .title-rule {
+      position: absolute;
+      left: 24px;
+      top: 30px;
+      width: 118px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--red), var(--blue));
+    }
+
+    h1 {
+      position: absolute;
+      left: 22px;
+      top: 52px;
+      margin: 0;
+      color: var(--text);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: .92;
+      letter-spacing: 0;
+    }
+
+    .label-tab {
+      position: absolute;
+      height: 31px;
+      display: flex;
+      align-items: flex-start;
+      padding: 3px 10px 0 6px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+      border-left: 1.4px solid var(--red);
+      border-top: 1.4px solid var(--red);
+      border-right: 1.4px solid var(--blue);
+      border-top-right-radius: 8px;
+      background: #fff;
+    }
+
+    .label-tab::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -1.4px;
+      width: 100%;
+      height: 1.4px;
+      border-top-right-radius: 8px;
+      background: linear-gradient(90deg, var(--red), var(--blue));
+    }
+
+    .section-wires {
+      position: absolute;
+      inset: 0;
+      width: 370px;
+      height: 1568px;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .wire {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 1.35;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .wire-active {
+      stroke: var(--active-stroke);
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+
+    .sensor {
+      --active: 0;
+      position: absolute;
+      display: grid;
+      place-items: center;
+      transform: translate(-50%, 0);
+      overflow: visible;
+    }
+
+    .sensor-media {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      overflow: visible;
+    }
+
+    .sensor img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .sensor .inactive {
+      opacity: calc(1 - var(--active));
+      filter: grayscale(1) saturate(0) opacity(.82);
+    }
+
+    .sensor .active {
+      opacity: var(--active);
+      filter: none;
+    }
+
+    .sensor svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .svg-inactive {
+      opacity: calc(1 - var(--active));
+    }
+
+    .svg-active {
+      opacity: var(--active);
+    }
+
+    .sensor-label {
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 7px);
+      width: 96px;
+      transform: translateX(-50%);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: .96;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    .sensor-label.wide { width: 118px; }
+    .sensor-label.tight { width: 76px; }
+
+    .s-vibration { left: 32px; top: 140px; width: 88px; }
+    .s-load { left: 32px; top: 348px; width: 65px; }
+    .s-displacement { left: 32px; top: 543px; width: 125px; }
+    .s-temperature { left: 32px; top: 824px; width: 132px; }
+    .s-electrical { left: 32px; top: 1047px; width: 98px; }
+    .s-fluid { left: 32px; top: 1245px; width: 64px; }
+
+    .icon-vibration-velocity { left: 68px; top: 214px; width: 62px; height: 62px; }
+    .icon-ultrasound { left: 184px; top: 214px; width: 72px; height: 62px; }
+    .icon-acceleration { left: 294px; top: 214px; width: 72px; height: 62px; }
+
+    .icon-torque { left: 68px; top: 414px; width: 62px; height: 62px; }
+    .icon-strain { left: 185px; top: 414px; width: 62px; height: 62px; }
+    .icon-bending { left: 294px; top: 414px; width: 62px; height: 62px; }
+
+    .icon-gps { left: 68px; top: 610px; width: 54px; height: 73px; }
+    .icon-movement { left: 185px; top: 610px; width: 68px; height: 69px; }
+    .icon-runout { left: 294px; top: 610px; width: 72px; height: 69px; }
+    .icon-speed { left: 118px; top: 741px; width: 90px; height: 38px; }
+    .icon-tilting { left: 235px; top: 743px; width: 100px; height: 32px; }
+
+    .icon-ambient { left: 68px; top: 903px; width: 36px; height: 72px; }
+    .icon-contact { left: 146px; top: 903px; width: 50px; height: 72px; }
+    .icon-thermal { left: 226px; top: 906px; width: 52px; height: 70px; }
+    .icon-shaft { left: 313px; top: 902px; width: 64px; height: 72px; }
+
+    .icon-current { left: 68px; top: 1110px; width: 86px; height: 58px; }
+    .icon-voltage { left: 185px; top: 1110px; width: 86px; height: 58px; }
+    .icon-power { left: 294px; top: 1106px; width: 64px; height: 64px; }
+
+    .icon-pressure { left: 68px; top: 1306px; width: 64px; height: 64px; }
+    .icon-moisture { left: 185px; top: 1304px; width: 70px; height: 64px; }
+    .icon-contamination { left: 294px; top: 1306px; width: 58px; height: 64px; }
+    .icon-flow { left: 118px; top: 1412px; width: 64px; height: 64px; }
+    .icon-metallic { left: 235px; top: 1410px; width: 70px; height: 64px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pin { position: relative; }
+    }
+  </style>
+</head>
+<body>
+  <main class="scroll-scene" id="scene" aria-label="Monitoring Technology sensor categories">
+    <div class="pin">
+      <div class="stage" aria-hidden="true">
+        <section class="board" id="board">
+          <div class="title-rule"></div>
+          <h1>Monitoring<br>Technology</h1>
+
+          <div class="label-tab s-vibration">Vibration</div>
+          <div class="label-tab s-load">Load</div>
+          <div class="label-tab s-displacement">Displacement</div>
+          <div class="label-tab s-temperature">Temperature</div>
+          <div class="label-tab s-electrical">Electrical</div>
+          <div class="label-tab s-fluid">Fluid</div>
+
+          <svg class="section-wires" viewBox="0 0 370 1568">
+            <defs>
+              <linearGradient id="sensorGradient" x1="0" y1="0" x2="370" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ef3340"/>
+                <stop offset=".52" stop-color="#334f9f"/>
+                <stop offset="1" stop-color="#36bedf"/>
+              </linearGradient>
+            </defs>
+
+            <path class="wire" d="M32 171 V236 Q32 246 42 246 H37 M99 246 H148 M220 246 H258"/>
+            <path class="wire wire-active" data-line="Vibration" d="M32 171 V236 Q32 246 42 246 H37 M99 246 H148 M220 246 H258"/>
+
+            <path class="wire" d="M32 379 V435 Q32 445 42 445 H37 M99 445 H154 M216 445 H263"/>
+            <path class="wire wire-active" data-line="Load" d="M32 379 V435 Q32 445 42 445 H37 M99 445 H154 M216 445 H263"/>
+
+            <path class="wire" d="M32 574 V636 Q32 646 42 646 H41 M95 646 H151 M219 646 H258 M330 646 H336 Q346 646 346 656 V746 Q346 760 332 760 H285 M185 760 H163"/>
+            <path class="wire wire-active" data-line="Displacement" d="M32 574 V636 Q32 646 42 646 H41 M95 646 H151 M219 646 H258 M330 646 H336 Q346 646 346 656 V746 Q346 760 332 760 H285 M185 760 H163"/>
+
+            <path class="wire" d="M32 855 V929 Q32 939 42 939 H50 M86 939 H121 M171 939 H200 M252 939 H281"/>
+            <path class="wire wire-active" data-line="Temperature" d="M32 855 V929 Q32 939 42 939 H50 M86 939 H121 M171 939 H200 M252 939 H281"/>
+
+            <path class="wire" d="M32 1078 V1129 Q32 1139 42 1139 H25 M111 1139 H142 M228 1139 H262"/>
+            <path class="wire wire-active" data-line="Electrical" d="M32 1078 V1129 Q32 1139 42 1139 H25 M111 1139 H142 M228 1139 H262"/>
+
+            <path class="wire" d="M32 1276 V1328 Q32 1338 42 1338 H36 M100 1338 H150 M220 1338 H265 M323 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H270 M200 1452 H149"/>
+            <path class="wire wire-active" data-line="Fluid" d="M32 1276 V1328 Q32 1338 42 1338 H36 M100 1338 H150 M220 1338 H265 M323 1338 H336 Q346 1338 346 1348 V1438 Q346 1452 332 1452 H270 M200 1452 H149"/>
+          </svg>
+
+          <div class="sensor icon-vibration-velocity" data-section="Vibration">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Vibration/vibration_velocity.png" alt="">
+              <img class="active" src="assets/Vibration/vibration_velocity_degrade.png" alt="">
+            </div>
+            <div class="sensor-label">Vibration<br>Velocity</div>
+          </div>
+          <div class="sensor icon-ultrasound" data-section="Vibration">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Vibration/ultrasound.png" alt="">
+              <img class="active" src="assets/Vibration/ultrasound_degrade.png" alt="">
+            </div>
+            <div class="sensor-label">Ultrasound</div>
+          </div>
+          <div class="sensor icon-acceleration" data-section="Vibration">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Vibration/acceleration.png" alt="">
+              <img class="active" src="assets/Vibration/acceleration_degrade.png" alt="">
+            </div>
+            <div class="sensor-label">Acceleration</div>
+          </div>
+
+          <div class="sensor icon-torque" data-section="Load">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Load/torque.png" alt="">
+              <img class="active" src="assets/Load/torque_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Torque</div>
+          </div>
+          <div class="sensor icon-strain" data-section="Load">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Load/strain.png" alt="">
+              <img class="active" src="assets/Load/strain_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Strain</div>
+          </div>
+          <div class="sensor icon-bending" data-section="Load">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Load/bending.png" alt="">
+              <img class="active" src="assets/Load/bending_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Bending</div>
+          </div>
+
+          <div class="sensor icon-gps" data-section="Displacement">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Displacement/gps_location.png" alt="">
+              <img class="active" src="assets/Displacement/gps_location_degrade.png" alt="">
+            </div>
+            <div class="sensor-label">GPS<br>Location</div>
+          </div>
+          <div class="sensor icon-movement" data-section="Displacement">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Displacement/movement.png" alt="">
+              <img class="active" src="assets/Displacement/movement_degrade.png" alt="">
+            </div>
+            <div class="sensor-label">Movement</div>
+          </div>
+          <div class="sensor icon-runout" data-section="Displacement">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Displacement/run_out.png" alt="">
+              <img class="active" src="assets/Displacement/run_out_degrade.png" alt="">
+            </div>
+            <div class="sensor-label">Run-Out</div>
+          </div>
+          <div class="sensor icon-speed" data-section="Displacement">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Displacement/speed.png" alt="">
+              <img class="active" src="assets/Displacement/speed_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Speed</div>
+          </div>
+          <div class="sensor icon-tilting" data-section="Displacement">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Displacement/tilting.png" alt="">
+              <img class="active" src="assets/Displacement/tilting_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Tilting</div>
+          </div>
+
+          <div class="sensor icon-ambient" data-section="Temperature">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Temperature/ambient_temperature.png" alt="">
+              <img class="active" src="assets/Temperature/ambient_temperature_degrade.png" alt="">
+            </div>
+            <div class="sensor-label wide">Ambient<br>Temperature</div>
+          </div>
+          <div class="sensor icon-contact" data-section="Temperature">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Temperature/contact_probes.png" alt="">
+              <img class="active" src="assets/Temperature/contact_probes_degrade.png" alt="">
+            </div>
+            <div class="sensor-label wide">Contact<br>Probes</div>
+          </div>
+          <div class="sensor icon-thermal" data-section="Temperature">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Temperature/thermal_imaging.png" alt="">
+              <img class="active" src="assets/Temperature/thermal_imaging_degrade.png" alt="">
+            </div>
+            <div class="sensor-label wide">Thermal<br>Imaging</div>
+          </div>
+          <div class="sensor icon-shaft" data-section="Temperature">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Temperature/shaft_temperature.png" alt="">
+              <img class="active" src="assets/Temperature/shaft_temperature_degrade.png" alt="">
+            </div>
+            <div class="sensor-label wide">Shaft<br>Temperature</div>
+          </div>
+
+          <div class="sensor icon-current" data-section="Electrical">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Electrical/current.png" alt="">
+              <img class="active" src="assets/Electrical/current_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Current</div>
+          </div>
+          <div class="sensor icon-voltage" data-section="Electrical">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Electrical/voltage.png" alt="">
+              <img class="active" src="assets/Electrical/voltage_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Voltage</div>
+          </div>
+          <div class="sensor icon-power" data-section="Electrical">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Electrical/power.png" alt="">
+              <img class="active" src="assets/Electrical/power_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Power</div>
+          </div>
+
+          <div class="sensor icon-pressure" data-section="Fluid">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Fluid/pressure.png" alt="">
+              <img class="active" src="assets/Fluid/pressure_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Pressure</div>
+          </div>
+          <div class="sensor icon-moisture" data-section="Fluid">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Fluid/moisture.png" alt="">
+              <img class="active" src="assets/Fluid/moisture_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Moisture</div>
+          </div>
+          <div class="sensor icon-contamination" data-section="Fluid">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Fluid/contamination.png" alt="">
+              <img class="active" src="assets/Fluid/contamination_degrade.png" alt="">
+            </div>
+            <div class="sensor-label wide">Contamination</div>
+          </div>
+          <div class="sensor icon-flow" data-section="Fluid">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Fluid/flow.png" alt="">
+              <img class="active" src="assets/Fluid/flow_degrade.png" alt="">
+            </div>
+            <div class="sensor-label tight">Flow</div>
+          </div>
+          <div class="sensor icon-metallic" data-section="Fluid">
+            <div class="sensor-media">
+              <img class="inactive" src="assets/Fluid/metallic_wear.png" alt="">
+              <img class="active" src="assets/Fluid/metallic_wear_degrade.png" alt="">
+            </div>
+            <div class="sensor-label">Metallic<br>Wear</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const sections = [
+      { name: "Vibration", icons: [...document.querySelectorAll('[data-section="Vibration"]')] },
+      { name: "Load", icons: [...document.querySelectorAll('[data-section="Load"]')] },
+      {
+        name: "Displacement",
+        icons: [
+          document.querySelector(".icon-gps"),
+          document.querySelector(".icon-movement"),
+          document.querySelector(".icon-runout"),
+          document.querySelector(".icon-tilting"),
+          document.querySelector(".icon-speed")
+        ]
+      },
+      { name: "Temperature", icons: [...document.querySelectorAll('[data-section="Temperature"]')] },
+      { name: "Electrical", icons: [...document.querySelectorAll('[data-section="Electrical"]')] },
+      {
+        name: "Fluid",
+        icons: [
+          document.querySelector(".icon-pressure"),
+          document.querySelector(".icon-moisture"),
+          document.querySelector(".icon-contamination"),
+          document.querySelector(".icon-metallic"),
+          document.querySelector(".icon-flow")
+        ]
+      }
+    ];
+
+    const scene = document.getElementById("scene");
+    const lineMap = new Map([...document.querySelectorAll("[data-line]")].map(path => [path.dataset.line, path]));
+    const totalUnits = sections.reduce((sum, section) => sum + section.icons.length + 1, 0);
+    let sceneStart = 0;
+    let sceneDistance = 1;
+    let ticking = false;
+
+    function clamp(value, min = 0, max = 1) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function smooth(value) {
+      value = clamp(value);
+      return value * value * (3 - 2 * value);
+    }
+
+    function setupLines() {
+      for (const path of lineMap.values()) {
+        const length = path.getTotalLength();
+        path.style.strokeDasharray = length;
+        path.style.strokeDashoffset = length;
+        path.dataset.length = String(length);
+      }
+    }
+
+    function resizeScene() {
+      const scale = Math.min(
+        1,
+        (window.innerWidth - 24) / 370,
+        (window.innerHeight - 24) / 1568
+      );
+      const stage = document.querySelector(".stage");
+      document.documentElement.style.setProperty("--board-scale", scale.toFixed(4));
+      stage.style.width = `${370 * scale}px`;
+      stage.style.height = `${1568 * scale}px`;
+      scene.style.height = `${window.innerHeight + totalUnits * 138}px`;
+      const rect = scene.getBoundingClientRect();
+      sceneStart = window.scrollY + rect.top;
+      sceneDistance = Math.max(1, scene.offsetHeight - window.innerHeight);
+      update();
+    }
+
+    function setLineProgress(section, progress) {
+      const path = lineMap.get(section.name);
+      if (!path) return;
+      const length = Number(path.dataset.length || path.getTotalLength());
+      path.style.strokeDashoffset = String(length * (1 - smooth(progress)));
+    }
+
+    function update() {
+      ticking = false;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const sceneProgress = reducedMotion ? 1 : clamp((window.scrollY - sceneStart) / sceneDistance);
+      const timeline = sceneProgress * totalUnits;
+      let cursor = 0;
+
+      for (const section of sections) {
+        const segment = section.icons.length + 1;
+        const local = timeline - cursor;
+        const lineProgress = clamp(local / 1);
+        setLineProgress(section, lineProgress);
+
+        section.icons.forEach((icon, index) => {
+          const active = smooth(local - 1 - index);
+          icon.style.setProperty("--active", active.toFixed(3));
+        });
+
+        if (local <= 0) {
+          setLineProgress(section, 0);
+          section.icons.forEach(icon => icon.style.setProperty("--active", "0"));
+        } else if (local >= segment) {
+          setLineProgress(section, 1);
+          section.icons.forEach(icon => icon.style.setProperty("--active", "1"));
+        }
+
+        cursor += segment;
+      }
+    }
+
+    function requestUpdate() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", resizeScene);
+    window.addEventListener("load", () => {
+      setupLines();
+      resizeScene();
+    });
+  </script>
+</body>
+</html>
