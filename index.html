@@ -135,6 +135,10 @@
       stroke-dashoffset: 1;
     }
 
+    .wire-active-blue {
+      stroke: var(--blue);
+    }
+
     .sensor {
       --active: 0;
       position: absolute;
@@ -297,7 +301,8 @@
             <path class="wire wire-active" data-line="Electrical" d="M23 1071 L23 1040 H96 C111 1040 122 1052 122 1070 V1071 H23 V1129 Q23 1139 33 1139 H328"/>
 
             <path class="wire" d="M23 1267 L23 1236 H74 C86 1236 94 1244 94 1266 V1267 H23 V1328 Q23 1338 33 1338 H340 Q350 1338 350 1348 V1433 Q350 1443 340 1443 H104"/>
-            <path class="wire wire-active" data-line="Fluid" d="M23 1267 L23 1236 H74 C86 1236 94 1244 94 1266 V1267 H23 V1328 Q23 1338 33 1338 H340 Q350 1338 350 1348 V1433 Q350 1443 340 1443 H104"/>
+            <path class="wire wire-active" data-line="Fluid" d="M23 1267 L23 1236 H74 C86 1236 94 1244 94 1266 V1267 H23"/>
+            <path class="wire wire-active wire-active-blue" data-line="Fluid" d="M23 1267 V1328 Q23 1338 33 1338 H340 Q350 1338 350 1348 V1433 Q350 1443 340 1443 H104"/>
           </svg>
 
           <div class="sensor icon-vibration-velocity" data-section="Vibration">
@@ -501,7 +506,12 @@
 
     const scene = document.getElementById("scene");
     const stage = document.querySelector(".stage");
-    const lineMap = new Map([...document.querySelectorAll("[data-line]")].map(path => [path.dataset.line, path]));
+    const lineMap = new Map();
+    document.querySelectorAll("[data-line]").forEach((path) => {
+      const key = path.dataset.line;
+      if (!lineMap.has(key)) lineMap.set(key, []);
+      lineMap.get(key).push(path);
+    });
     const totalUnits = sections.reduce((sum, section) => sum + section.icons.length + 1, 0);
     let sceneStart = 0;
     let sceneDistance = 1;
@@ -517,11 +527,13 @@
     }
 
     function setupLines() {
-      for (const path of lineMap.values()) {
-        const length = path.getTotalLength();
-        path.style.strokeDasharray = length;
-        path.style.strokeDashoffset = length;
-        path.dataset.length = String(length);
+      for (const paths of lineMap.values()) {
+        paths.forEach((path) => {
+          const length = path.getTotalLength();
+          path.style.strokeDasharray = length;
+          path.style.strokeDashoffset = length;
+          path.dataset.length = String(length);
+        });
       }
     }
 
@@ -559,10 +571,17 @@
     }
 
     function setLineProgress(section, progress) {
-      const path = lineMap.get(section.name);
-      if (!path) return;
-      const length = Number(path.dataset.length || path.getTotalLength());
-      path.style.strokeDashoffset = String(length * (1 - smooth(progress)));
+      const paths = lineMap.get(section.name);
+      if (!paths) return;
+      const lengths = paths.map((path) => Number(path.dataset.length || path.getTotalLength()));
+      const totalLength = lengths.reduce((sum, length) => sum + length, 0);
+      let visibleLength = totalLength * smooth(progress);
+      paths.forEach((path, index) => {
+        const length = lengths[index];
+        const visible = clamp(visibleLength / length);
+        path.style.strokeDashoffset = String(length * (1 - visible));
+        visibleLength -= length;
+      });
     }
 
     function update() {
